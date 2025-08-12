@@ -155,7 +155,7 @@
             "question": "A1"
         },
         {
-            "problem": "For every positive real number $x$, let \\[\ng(x)=\\lim_{r\\to 0}  ((x+1)^{r+1}-x^{r+1})^{\\frac{1}{r}}.\n\\] Find $\\lim_{x\\to \\infty}\\frac{g(x)}{x}$. Solution By the Binomial Theorem one obtains $\\lim_{x \\to \\infty} \\lim_{r \\to 0} \\left((1+r)+\\frac{(1+r)r}{2}\\cdot x^{-1}+\\frac{(1+r)r(r-1)}{6} \\cdot x^{-2}+\\dots \\right)^{\\frac{1}{r}}$ $=\\lim_{r \\to 0}(1+r)^{\\frac{1}{r}}=\\boxed{e}$",
+            "problem": "For every positive real number $x$, let \\[\ng(x)=\\lim_{r\\to 0}  ((x+1)^{r+1}-x^{r+1})^{\\frac{1}{r}}.\n\\] Find $\\lim_{x\\to \\infty}\\frac{g(x)}{x}$.",
             "question": "A2"
         },
         {
@@ -175,7 +175,7 @@
             "question": "A6"
         },
         {
-            "problem": "Suppose that the plane is tiled with an infinite checkerboard of unit squares. If another unit square is dropped on the plane at random with position and orientation independent of the checkerboard tiling, what is the probability that it does not cover any of the corners of the squares of the checkerboard? Solution With probability $1$ the number of corners covered is $0$, $1$, or $2$ for example by the diameter of a square being $\\sqrt{2}$ so it suffices to compute the probability that the square covers $2$ corners. This is due to the fact that density implies the mean number of captured corners is $1$. For the lattice with offset angle $\\theta \\in \\left[0,\\frac{\\pi}{2}\\right]$ consider placing a lattice uniformly randomly on to it and in particular say without loss of generality consider the square which covers the horizontal lattice midpoint $\\left(\\frac{1}{2},0 \\right)$. The locus of such midpoint locations so that the square captures the $2$ points $(0,0),(1,0)$, is a rectangle. As capturing horizontally adjacent points does not occur when capturing vertically adjacent points one computes twice that probability as $\\frac{4}{\\pi} \\int_0^{\\frac{\\pi}{2}} (1-\\sin(\\theta))(1-\\cos(\\theta)) d\\theta=\\boxed{\\frac{2(\\pi-3)}{\\pi}}$ [asy]\ndraw((0,0)--(80,40));\ndraw((0,0)--(-40,80));\ndraw((80,40)--(40,120));\ndraw((-40,80)--(40,120));\ndraw((80,40)--(-20,40));\ndraw((-40,80)--(60,80));\ndraw((32*sqrt(5),16*sqrt(5))--(-8*sqrt(5),16*sqrt(5)));\ndraw((40+8*sqrt(5),120-16*sqrt(5))--(40-32*sqrt(5),120-16*sqrt(5)));\ndraw((12*sqrt(5),16*sqrt(5))--(12*sqrt(5)+2*(40-16*sqrt(5)),16*sqrt(5)+(40-16*sqrt(5))));\ndraw((12*sqrt(5),16*sqrt(5))--(12*sqrt(5)-(80-16*sqrt(5))/2,16*sqrt(5)+(80-16*sqrt(5))));\ndraw((40-12*sqrt(5),120-16*sqrt(5))--(40-12*sqrt(5)+(120-16*sqrt(5)-40)/2,120-16*sqrt(5)-(120-16*sqrt(5)-40)));\ndraw((40-12*sqrt(5),120-16*sqrt(5))--(40-12*sqrt(5)-2*(120-16*sqrt(5)-80),120-16*sqrt(5)-(120-16*sqrt(5)-80)));\n[/asy]",
+            "problem": "Suppose that the plane is tiled with an infinite checkerboard of unit squares. If another unit square is dropped on the plane at random with position and orientation independent of the checkerboard tiling, what is the probability that it does not cover any of the corners of the squares of the checkerboard?",
             "question": "B1"
         },
         {

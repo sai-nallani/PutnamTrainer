@@ -29,11 +29,12 @@ def data_analysis():
         data = json.load(f)
     
     for i in data:
-        c = 1
-        if len(data[i]) > 12:
-            print(i)
+        for j in range(len(data[i])):
+            if "Solution" in data[i][j]["problem"]:
+                data[i][j]["problem"] = data[i][j]["problem"][:data[i][j]["problem"].index("Solution")]
+                print(i, data[i][j]["question"])
     
-    # with open("./trainer/public/putnam_problems.json", "w") as f:
-    #     json.dump(data, f)
+    with open("./trainer/public/putnam_problems.json", "w") as f:
+        json.dump(data, f)
 
 data_analysis()
