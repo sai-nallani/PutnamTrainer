@@ -1,0 +1,238 @@
+@font-face {
+  font-family: 'CMU Roman';
+  src: url('/fonts/cmun_roman.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CMU Roman';
+  src: url('/fonts/cmun_romanbold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CMU Sans';
+  src: url('/fonts/cmun_sanserif.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'CMU Sans';
+  src: url('/fonts/cmun_sanserifbold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Minimalistic, dark mode style for Putnam Trainer */
+:root {
+  --pt-bg: #111;
+  --pt-surface: #181818;
+  --pt-text: #fff;
+  --pt-accent: #80bfff;
+  --pt-border: #333;
+  --pt-font-weight: 400;
+  --pt-font-family-serif: 'CMU Roman', 'Latin Modern', 'STIX', 'Times New Roman', serif;
+  --pt-font-family-sans: 'CMU Sans', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+html[data-theme="light"] {
+  --pt-bg: #fafafa;
+  --pt-surface: #ffffff;
+  --pt-text: #111;
+  --pt-accent: #0a84ff;
+  --pt-border: #e5e5e5;
+}
+
+html[data-bold="true"] {
+  --pt-font-weight: 700;
+}
+
+html[data-font="serif"] body, html[data-font="serif"] .putnam-container {
+  font-family: var(--pt-font-family-serif);
+}
+
+html[data-font="sans"] body, html[data-font="sans"] .putnam-container {
+  font-family: var(--pt-font-family-sans);
+}
+
+body {
+  background: var(--pt-bg) !important;
+  font-weight: var(--pt-font-weight);
+  font-synthesis-weight: none; /* ensure we use actual bold font faces */
+}
+
+.putnam-container {
+  max-width: 60%;
+  margin: 3rem auto;
+  padding: 2rem 2.5rem;
+  background: var(--pt-surface);
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+  font-family: 'CMU Roman', 'Latin Modern', 'STIX', 'Times New Roman', serif;
+  color: var(--pt-text);
+}
+.putnam-title {
+  font-size: 2.2rem;
+  font-weight: var(--pt-font-weight);
+  margin-bottom: 2rem;
+  letter-spacing: -1px;
+  text-align: center;
+  color: var(--pt-text);
+}
+.putnam-controls {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+  color: var(--pt-text);
+}
+.putnam-select {
+  margin-left: 0.5rem;
+  padding: 0.4rem 1.2rem;
+  border-radius: 8px;
+  border: 1px solid var(--pt-border);
+  background: var(--pt-surface);
+  color: var(--pt-text);
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+.putnam-select:focus {
+  border: 1.5px solid var(--pt-accent);
+  outline: none;
+}
+.putnam-button {
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--pt-border);
+  background: var(--pt-accent);
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.02s ease;
+}
+.putnam-button:hover { filter: brightness(1.05); }
+.putnam-button:active { transform: translateY(1px); }
+.putnam-button:disabled { opacity: 0.6; cursor: not-allowed; }
+.putnam-problem {
+  background: var(--pt-surface);
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.12);
+  padding: 1.5rem;
+  font-size: 1.15rem;
+  min-height: 120px;
+  color: var(--pt-text);
+}
+.putnam-problem-title {
+  font-size: 1.1rem;
+  font-weight: var(--pt-font-weight);
+  margin-bottom: 1.2rem;
+  color: var(--pt-accent);
+}
+.loader {
+  text-align: center;
+  font-size: 1.2rem;
+  margin-top: 4rem;
+  color: var(--pt-text);
+}
+
+/* Navbar styling */
+.pt-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(6px);
+  background: color-mix(in srgb, var(--pt-surface) 85%, transparent);
+  border-bottom: 1px solid var(--pt-border);
+}
+.pt-navbar-inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.pt-brand {
+  font-weight: 700;
+  letter-spacing: -0.4px;
+}
+.pt-controls { display: flex; gap: 0.75rem; align-items: center; }
+.pt-group { display: inline-flex; border: 1px solid var(--pt-border); border-radius: 10px; overflow: hidden; }
+.pt-btn { padding: 0.35rem 0.7rem; background: transparent; color: var(--pt-text); border: 0; cursor: pointer; }
+.pt-btn.active { background: var(--pt-accent); color: #fff; }
+.pt-checkbox { display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+.pt-checkbox input { accent-color: var(--pt-accent); }
+
+textarea::placeholder { color: color-mix(in srgb, var(--pt-text) 50%, transparent); }
+textarea:focus { outline: none; border-color: var(--pt-accent) !important; box-shadow: 0 0 0 2px color-mix(in srgb, var(--pt-accent) 25%, transparent); }
+
+/* Notes editor */
+.notes-editor { display: grid; gap: 0.6rem; }
+.notes-label { color: var(--pt-text); font-size: 0.95rem; }
+.notes-input {
+  width: 100%;
+  resize: vertical;
+  min-height: 120px;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  background: var(--pt-surface);
+  color: var(--pt-text);
+  border: 1px solid var(--pt-border);
+}
+.macros-input {
+  font-family: 'Courier New', Courier, monospace;
+}
+.notes-preview {
+  padding: 0.6rem 0.75rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--pt-surface) 85%, transparent);
+  border: 1px dashed var(--pt-border);
+  color: var(--pt-text);
+}
+
+/* Switch */
+.pt-switch { position: relative; display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+.pt-switch input { display: none; }
+.pt-slider { width: 42px; height: 22px; background: var(--pt-border); border-radius: 999px; position: relative; transition: background 0.2s; }
+.pt-slider::after { content: ""; width: 18px; height: 18px; background: var(--pt-surface); border: 1px solid var(--pt-border); border-radius: 50%; position: absolute; top: 2px; left: 2px; transition: transform 0.2s; }
+.pt-switch input:checked + .pt-slider { background: var(--pt-accent); }
+.pt-switch input:checked + .pt-slider::after { transform: translateX(20px); }
+.pt-switch-label { color: var(--pt-text); font-size: 0.9rem; }
+
+/* Gradient range for theme */
+.pt-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 180px;
+  height: 10px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #111 0%, #fafafa 100%);
+  outline: none;
+  border: 1px solid var(--pt-border);
+}
+.pt-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--pt-accent);
+  border: 2px solid var(--pt-surface);
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+.pt-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--pt-accent);
+  border: 2px solid var(--pt-surface);
+  cursor: pointer;
+}
+.pt-range-label { color: var(--pt-text); font-size: 0.9rem; }
+
+/* MathJax color should follow theme */
+mjx-container { color: var(--pt-text); }
