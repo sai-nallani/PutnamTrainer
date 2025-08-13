@@ -1,36 +1,26 @@
 "use client";
-
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-
-//
+import React, { useEffect, useMemo, useState } from "react";
 
 function setRootAttr(name: string, value: string) {
   if (typeof document === "undefined") return;
   document.documentElement.setAttribute(name, value);
 }
-
 function setRootVar(name: string, value: string) {
   if (typeof document === "undefined") return;
   document.documentElement.style.setProperty(name, value);
 }
-
 function hexToRgb(hex: string) {
   const h = hex.replace('#', '');
   const bigint = parseInt(h, 16);
   if (h.length === 6) {
     return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
   }
-  // fallback
   return { r: 0, g: 0, b: 0 };
 }
-
 function rgbToHex(r: number, g: number, b: number) {
   const toHex = (v: number) => v.toString(16).padStart(2, '0');
   return `#${toHex(Math.round(r))}${toHex(Math.round(g))}${toHex(Math.round(b))}`;
 }
-
-// Color helpers for smoother interpolation in HSL with eased progress
 function rgbToHsl(r: number, g: number, b: number) {
   r /= 255; g /= 255; b /= 255;
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -66,12 +56,10 @@ function hslToHex(h: number, s: number, l: number) {
   return rgbToHex(r, g, b);
 }
 function lerpHue(a: number, b: number, t: number) {
-  let delta = ((b - a + 540) % 360) - 180; // shortest path
+  let delta = ((b - a + 540) % 360) - 180;
   return (a + delta * t + 360) % 360;
 }
-function smoothstep(t: number) {
-  return t * t * (3 - 2 * t);
-}
+function smoothstep(t: number) { return t * t * (3 - 2 * t); }
 function mixHsl(hex1: string, hex2: string, t: number) {
   const a = hexToRgb(hex1); const b = hexToRgb(hex2);
   const A = rgbToHsl(a.r, a.g, a.b);
@@ -83,14 +71,12 @@ function mixHsl(hex1: string, hex2: string, t: number) {
   return hslToHex(h, s, l);
 }
 
-export default function ClientNav() {
-  // Use SSR-stable defaults; update from localStorage after mount to avoid hydration mismatch
-  const [theme, setTheme] = useState<string>("dark");
-  const [font, setFont] = useState<string>("serif");
-  const [bold, setBold] = useState<string>("false");
-  const [themeScale, setThemeScale] = useState<number>(0);
+export default function VisualPage() {
   const [scheme, setScheme] = useState<string>("Classic");
+  const [themeScale, setThemeScale] = useState<number>(0);
   const [loaded, setLoaded] = useState(false);
+  const [font, setFont] = useState<'serif' | 'sans'>('serif');
+  const [bold, setBold] = useState<'true' | 'false'>('false');
 
   const SCHEMES = useMemo(() => ({
     Classic: {
@@ -118,33 +104,34 @@ export default function ClientNav() {
   const DARK = useMemo(() => SCHEMES[scheme as keyof typeof SCHEMES].dark, [SCHEMES, scheme]);
   const LIGHT = useMemo(() => SCHEMES[scheme as keyof typeof SCHEMES].light, [SCHEMES, scheme]);
 
-  // After mount, load saved prefs and apply
   useEffect(() => {
     try {
-      const t = localStorage.getItem('pt-theme');
-      const f = localStorage.getItem('pt-font');
-      const b = localStorage.getItem('pt-bold');
       const s = localStorage.getItem('pt-theme-scale');
-  const cs = localStorage.getItem('pt-scheme');
-      if (t === 'light' || t === 'dark') setTheme(t);
-      if (f === 'serif' || f === 'sans') setFont(f);
-      if (b === 'true' || b === 'false') setBold(b);
+      const cs = localStorage.getItem('pt-scheme');
+  const f = localStorage.getItem('pt-font');
+  const b = localStorage.getItem('pt-bold');
       const sn = s ? Number(s) : NaN;
       if (Number.isFinite(sn)) setThemeScale(Math.min(100, Math.max(0, sn)));
-  if (cs && (cs in SCHEMES)) setScheme(cs);
-    } catch { }
-  setLoaded(true);
-  }, []);
+      if (cs && (cs in SCHEMES)) setScheme(cs);
+  if (f === 'serif' || f === 'sans') setFont(f);
+  if (b === 'true' || b === 'false') setBold(b);
+    } catch {}
+    setLoaded(true);
+  }, [SCHEMES]);
 
-  // Resync from localStorage when window regains focus (after visiting Appearance page)
+  // Resync when window regains focus (if user changed appearance elsewhere)
   useEffect(() => {
     const onFocus = () => {
       try {
         const s = localStorage.getItem('pt-theme-scale');
         const cs = localStorage.getItem('pt-scheme');
+  const f = localStorage.getItem('pt-font');
+  const b = localStorage.getItem('pt-bold');
         const sn = s ? Number(s) : NaN;
         if (Number.isFinite(sn)) setThemeScale(Math.min(100, Math.max(0, sn)));
         if (cs && (cs in SCHEMES)) setScheme(cs);
+  if (f === 'serif' || f === 'sans') setFont(f);
+  if (b === 'true' || b === 'false') setBold(b);
       } catch {}
     };
     window.addEventListener('focus', onFocus);
@@ -152,61 +139,94 @@ export default function ClientNav() {
   }, [SCHEMES]);
 
   useEffect(() => {
-    setRootAttr("data-theme", theme);
-    localStorage.setItem("pt-theme", theme);
-  }, [theme]);
-
-  useEffect(() => {
-    setRootAttr("data-font", font);
-    localStorage.setItem("pt-font", font);
-  }, [font]);
-
-  useEffect(() => {
-    setRootAttr("data-bold", bold);
-    localStorage.setItem("pt-bold", bold);
-  }, [bold]);
-
-  useEffect(() => {
-    if (loaded) localStorage.setItem('pt-scheme', scheme);
-  }, [scheme, loaded]);
-
-  // Set static vars for the slider gradient ends
-  useEffect(() => {
     setRootVar('--pt-range-start', DARK.bg);
     setRootVar('--pt-range-end', LIGHT.bg);
   }, [DARK, LIGHT]);
 
-  // Apply theme based on themeScale [0..100] using eased HSL interpolation
+  // Apply font and bold attributes and persist
+  useEffect(() => {
+    setRootAttr('data-font', font);
+    if (loaded) localStorage.setItem('pt-font', font);
+  }, [font, loaded]);
+  useEffect(() => {
+    setRootAttr('data-bold', bold);
+    if (loaded) localStorage.setItem('pt-bold', bold);
+  }, [bold, loaded]);
+
   useEffect(() => {
     const t = Math.min(100, Math.max(0, themeScale)) / 100;
-    // Update variables with nicer in-between tones
     setRootVar('--pt-bg', mixHsl(DARK.bg, LIGHT.bg, t));
     setRootVar('--pt-surface', mixHsl(DARK.surface, LIGHT.surface, t));
     setRootVar('--pt-text', mixHsl(DARK.text, LIGHT.text, t));
     setRootVar('--pt-accent', mixHsl(DARK.accent, LIGHT.accent, t));
     setRootVar('--pt-border', mixHsl(DARK.border, LIGHT.border, t));
-    // Keep a coarse theme attribute for compatibility
     setRootAttr('data-theme', t >= 0.5 ? 'light' : 'dark');
     if (loaded) localStorage.setItem('pt-theme-scale', String(themeScale));
   }, [themeScale, DARK, LIGHT, loaded]);
 
+  useEffect(() => {
+    if (loaded) localStorage.setItem('pt-scheme', scheme);
+  }, [scheme, loaded]);
+
   return (
-    <nav className="pt-navbar">
-      <div className="pt-navbar-inner">
-        <Link href="/" className="pt-brand" style={{ textDecoration: 'none', color: 'inherit' }}>Putnam Trainer</Link>
-        <div className="pt-controls">
-          {/* Appearance controls moved to /visual */}
-          <Link href="/macros" className="putnam-button" style={{ fontWeight: 700, textAlign: "center", width: '11.5rem', marginLeft: '0.5rem' }}>
-            Edit LaTeX Macros
-          </Link>
-          <Link href="/history" className="putnam-button" style={{ fontWeight: 700, marginLeft: '0.5rem' }}>
-            History
-          </Link>
-          <Link href="/visual" className="putnam-button" style={{ fontWeight: 700, marginLeft: '0.5rem' }}>
-            Appearance
-          </Link>
+    <div className="putnam-container" style={{ maxWidth: 900 }}>
+      <h1 className="putnam-title">Appearance</h1>
+      <div className="putnam-problem" style={{ display: 'grid', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', flexWrap: 'wrap' }}>
+          <span className="pt-range-label">Font</span>
+          <div className="pt-group" role="group" aria-label="Font family">
+            <button
+              className={`pt-btn ${font === 'serif' ? 'active' : ''}`}
+              onClick={() => { setFont('serif'); try { localStorage.setItem('pt-font', 'serif'); } catch {} }}
+              aria-pressed={font === 'serif'}
+            >
+              Serif
+            </button>
+            <button
+              className={`pt-btn ${font === 'sans' ? 'active' : ''}`}
+              onClick={() => { setFont('sans'); try { localStorage.setItem('pt-font', 'sans'); } catch {} }}
+              aria-pressed={font === 'sans'}
+            >
+              Sans
+            </button>
+          </div>
+          <label className="pt-checkbox" style={{ marginLeft: '0.25rem' }}>
+            <input
+              type="checkbox"
+              checked={bold === 'true'}
+              onChange={(e) => { const v = e.target.checked ? 'true' : 'false'; setBold(v); try { localStorage.setItem('pt-bold', v); } catch {} }}
+            />
+            <span>Bold</span>
+          </label>
+        </div>
+        <label style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem' }}>
+          <span className="pt-range-label">Scheme</span>
+          <select
+            className="putnam-select"
+            value={scheme}
+            onChange={(e) => { const v = e.target.value; setScheme(v); try { localStorage.setItem('pt-scheme', v); } catch {} }}
+            aria-label="Color scheme"
+          >
+            {Object.keys(SCHEMES).map(name => (
+              <option key={name} value={name}>{name}</option>
+            ))}
+          </select>
+        </label>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.7rem' }}>
+          <span className="pt-range-label">Dark</span>
+          <input
+            className="pt-range"
+            type="range"
+            min={0}
+            max={100}
+            step={1}
+            value={themeScale}
+            onChange={(e) => { const v = Number(e.target.value); setThemeScale(v); try { localStorage.setItem('pt-theme-scale', String(v)); } catch {} }}
+            aria-label="Theme (Dark to Light)"
+          />
+          <span className="pt-range-label">Light</span>
         </div>
       </div>
-    </nav>
+    </div>
   );
 }

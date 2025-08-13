@@ -108,8 +108,8 @@ body {
   border-radius: 8px;
   border: 1px solid var(--pt-border);
   background: var(--pt-accent);
+  font-size: 0.92rem;
   color: #fff;
-  font-size: 0.95rem;
   cursor: pointer;
   transition: filter 0.15s ease, transform 0.02s ease;
 }
@@ -206,18 +206,20 @@ textarea:focus { outline: none; border-color: var(--pt-accent) !important; box-s
 .pt-range {
   -webkit-appearance: none;
   appearance: none;
-  width: 180px;
-  height: 10px;
+  width: 220px;
+  height: 12px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #111 0%, #fafafa 100%);
+  background:
+    linear-gradient(90deg, var(--pt-range-start, #111) 0%, var(--pt-range-end, #fafafa) 100%),
+    linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.08));
   outline: none;
   border: 1px solid var(--pt-border);
 }
 .pt-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--pt-accent);
   border: 2px solid var(--pt-surface);
@@ -225,8 +227,8 @@ textarea:focus { outline: none; border-color: var(--pt-accent) !important; box-s
   cursor: pointer;
 }
 .pt-range::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background: var(--pt-accent);
   border: 2px solid var(--pt-surface);

@@ -39,6 +39,7 @@ export default function PutnamTrainer() {
   const [problemId, setProblemId] = useState("A1");
   const [loading, setLoading] = useState(true);
   const didInitFromStorage = useRef(false);
+  const initFromQuery = useRef(false);
   const userInteracted = useRef(false);
   const restoringSelection = useRef(false);
 
@@ -49,6 +50,19 @@ export default function PutnamTrainer() {
         setProblemsData(data);
         setLoading(false);
       });
+    // If arrived with query params, preselect year/problem once data loads
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const qYear = params.get('year');
+      const qProblem = params.get('problem');
+      if (qYear) setYear(qYear);
+      if (qProblem) setProblemId(qProblem);
+      if (qYear || qProblem) {
+        initFromQuery.current = true;
+        // mark as user interaction so pt-selected gets updated
+        userInteracted.current = true;
+      }
+    } catch {}
   }, []);
 
   const years = Object.keys(problemsData).sort((a, b) => b.localeCompare(a));
@@ -60,6 +74,7 @@ export default function PutnamTrainer() {
 
   // IndexedDB-backed user data
   const [done, setDone] = useState(false);
+  const [working, setWorking] = useState(false);
   const [notes, setNotes] = useState("");
   const notesSaveTimer = useRef<number | null>(null);
 
@@ -70,8 +85,9 @@ export default function PutnamTrainer() {
       try {
         const data = await getProblemData(year, problemId);
         if (cancelled) return;
-        setDone(!!data?.done);
-        setNotes(data?.notes ?? "");
+  setDone(!!data?.done);
+  setWorking(!!data?.working);
+  setNotes(data?.notes ?? "");
       } catch {
         setDone(false);
         setNotes("");
@@ -89,6 +105,12 @@ export default function PutnamTrainer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [done]);
 
+  // Save working flag immediately on change
+  useEffect(() => {
+    if (!selectedProblem) return;
+    saveProblemData(year, problemId, { working }).catch(() => { });
+  }, [working]);
+
   // Debounce notes saving
   useEffect(() => {
     if (!selectedProblem) return;
@@ -105,6 +127,7 @@ export default function PutnamTrainer() {
   // One-time restore of last selection from localStorage once data is loaded
   useEffect(() => {
     if (didInitFromStorage.current) return;
+    if (initFromQuery.current) return; // do not override URL-selected problem
     if (!Object.keys(problemsData).length) return;
     didInitFromStorage.current = true;
     try {
@@ -335,9 +358,13 @@ export default function PutnamTrainer() {
       <div className="putnam-problem">
         <h2 className="putnam-problem-title">{year} {problemId}</h2>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-          <label className="pt-checkbox">
+          <label className="pt-checkbox" style={{ marginRight: '1.5em' }}>
             <input type="checkbox" checked={done} onChange={(e) => setDone(e.target.checked)} />
             <span>Done</span>
+          </label>
+          <label className="pt-checkbox">
+            <input type="checkbox" checked={working} onChange={(e) => setWorking(e.target.checked)} />
+            <span>Working</span>
           </label>
         </div>
         {selectedProblem ? (

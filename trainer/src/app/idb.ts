@@ -13,6 +13,7 @@ export interface ProblemUserData {
   year: string;
   problemId: string;
   done: boolean;
+  working: boolean;
   notes: string;
   updatedAt: number;
 }
@@ -83,7 +84,7 @@ export async function getProblemData(year: string, problemId: string): Promise<P
   }
 }
 
-export async function saveProblemData(year: string, problemId: string, patch: Partial<Pick<ProblemUserData, 'done' | 'notes'>>): Promise<ProblemUserData> {
+export async function saveProblemData(year: string, problemId: string, patch: Partial<Pick<ProblemUserData, 'done' | 'working' | 'notes'>>): Promise<ProblemUserData> {
   const key: ProblemKey = `${year}:${problemId}`;
   const db = await openDB();
   try {
@@ -93,6 +94,7 @@ export async function saveProblemData(year: string, problemId: string, patch: Pa
       year,
       problemId,
       done: patch.done ?? existing?.done ?? false,
+      working: patch.working ?? existing?.working ?? false,
       notes: patch.notes ?? existing?.notes ?? '',
       updatedAt: Date.now(),
     };
