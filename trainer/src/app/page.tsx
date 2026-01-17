@@ -62,7 +62,7 @@ export default function PutnamTrainer() {
         // mark as user interaction so pt-selected gets updated
         userInteracted.current = true;
       }
-    } catch {}
+    } catch { }
   }, []);
 
   const years = Object.keys(problemsData).sort((a, b) => b.localeCompare(a));
@@ -85,9 +85,9 @@ export default function PutnamTrainer() {
       try {
         const data = await getProblemData(year, problemId);
         if (cancelled) return;
-  setDone(!!data?.done);
-  setWorking(!!data?.working);
-  setNotes(data?.notes ?? "");
+        setDone(!!data?.done);
+        setWorking(!!data?.working);
+        setNotes(data?.notes ?? "");
       } catch {
         setDone(false);
         setNotes("");
@@ -156,7 +156,7 @@ export default function PutnamTrainer() {
   const maxYear = yearNums[yearNums.length - 1] ?? 2024;
   const [yearRange, setYearRange] = useState<[number, number]>([minYear, maxYear]);
   // Question number checkboxes
-  const [selectedQns, setSelectedQns] = useState<number[]>([1,2,3,4,5,6]);
+  const [selectedQns, setSelectedQns] = useState<number[]>([1, 2, 3, 4, 5, 6]);
 
   const handleRandom = () => {
     // Filter years by range
@@ -239,7 +239,7 @@ export default function PutnamTrainer() {
       />
 
       <h1 className="putnam-title">Putnam Trainer</h1>
-  <div className="putnam-controls" style={{ position: 'relative' }}>
+      <div className="putnam-controls" style={{ position: 'relative' }}>
         <label>
           Year:
           <select
@@ -303,11 +303,11 @@ export default function PutnamTrainer() {
             </span>
           </button>
           {optionsOpen && (
-            <div style={{ position: 'absolute', top: '2.5rem', right: 0, background: 'var(--pt-surface)', border: '1px solid var(--pt-border)', borderRadius: 10, boxShadow: '0 2px 12px rgba(0,0,0,0.12)', padding: '1rem', zIndex: 100, minWidth: 220 }}>
+            <div className="randomizer-options" style={{ position: 'absolute', top: '2.5rem', right: 0, background: 'var(--pt-surface)', border: '1px solid var(--pt-border)', borderRadius: 10, boxShadow: '0 2px 12px rgba(0,0,0,0.12)', padding: '1rem', zIndex: 100, width: 'max-content', maxWidth: 'calc(100vw - 2rem)' }}>
               <div style={{ marginBottom: '0.7rem' }}>
                 <strong style={{ color: 'var(--pt-text)' }}>Question Number</strong>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.7rem', marginTop: '0.7rem' }}>
-                  {[1,2,3,4,5,6].map(num => (
+                  {[1, 2, 3, 4, 5, 6].map(num => (
                     <label key={num} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.97rem', color: 'var(--pt-text)' }}>
                       <input
                         type="checkbox"
@@ -327,27 +327,31 @@ export default function PutnamTrainer() {
               </div>
               <div style={{ marginBottom: '0.7rem' }}>
                 <strong style={{ color: 'var(--pt-text)' }}>Year Range</strong>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.7rem', marginTop: '0.7rem' }}>
-                  <span style={{ color: 'var(--pt-text)', fontSize: '0.97rem' }}>Min</span>
-                  <input
-                    type="range"
-                    min={minYear}
-                    max={maxYear}
-                    value={yearRange[0]}
-                    onChange={e => setYearRange([Number(e.target.value), yearRange[1]])}
-                    style={{ accentColor: 'var(--pt-accent)' }}
-                  />
-                  <span style={{ color: 'var(--pt-accent)', fontWeight: 600 }}>{yearRange[0]}</span>
-                  <span style={{ color: 'var(--pt-text)', fontSize: '0.97rem' }}>Max</span>
-                  <input
-                    type="range"
-                    min={minYear}
-                    max={maxYear}
-                    value={yearRange[1]}
-                    onChange={e => setYearRange([yearRange[0], Number(e.target.value)])}
-                    style={{ accentColor: 'var(--pt-accent)' }}
-                  />
-                  <span style={{ color: 'var(--pt-accent)', fontWeight: 600 }}>{yearRange[1]}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.7rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <span style={{ color: 'var(--pt-text)', fontSize: '0.97rem', minWidth: '2rem' }}>Min</span>
+                    <input
+                      type="range"
+                      min={minYear}
+                      max={maxYear}
+                      value={yearRange[0]}
+                      onChange={e => setYearRange([Number(e.target.value), yearRange[1]])}
+                      style={{ accentColor: 'var(--pt-accent)', flex: 1, minWidth: 80 }}
+                    />
+                    <span style={{ color: 'var(--pt-accent)', fontWeight: 600, minWidth: '2.5rem' }}>{yearRange[0]}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <span style={{ color: 'var(--pt-text)', fontSize: '0.97rem', minWidth: '2rem' }}>Max</span>
+                    <input
+                      type="range"
+                      min={minYear}
+                      max={maxYear}
+                      value={yearRange[1]}
+                      onChange={e => setYearRange([yearRange[0], Number(e.target.value)])}
+                      style={{ accentColor: 'var(--pt-accent)', flex: 1, minWidth: 80 }}
+                    />
+                    <span style={{ color: 'var(--pt-accent)', fontWeight: 600, minWidth: '2.5rem' }}>{yearRange[1]}</span>
+                  </div>
                 </div>
               </div>
               <button type="button" className="putnam-button" style={{ marginTop: '0.5rem', width: '100%' }} onClick={() => setOptionsOpen(false)}>Close</button>
